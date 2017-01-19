@@ -19,7 +19,7 @@ java -ea -classpath $ELLA_DIR/bin/ella.server.jar com.apposcopy.ella.server.Serv
 exit
 fi
 
-#start the server
+#stop the server
 if [ "$1" == 'k' ]; then
 java -ea -classpath $ELLA_DIR/bin/ella.server.jar com.apposcopy.ella.server.ServerController kill
 exit
