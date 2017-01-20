@@ -20,12 +20,12 @@ public class Server
 {
 	private static final Logger logger = Logger.getLogger(Server.class.getName());
 	private static final int BUFSIZE = 10240;
-	private Map<String, Integer> freq = new HashMap<String, Integer>();
-	public static int MAX = 120;
+	//private Map<String, Integer> freq = new HashMap<String, Integer>();
+	//public static int MAX = 120;
 
 	private Map<String, Set<Integer>> covers = new HashMap<String, Set<Integer>>();
 
-	private Map<String, Logger> loggers = new HashMap<String, Logger>();
+	//private Map<String, Logger> loggers = new HashMap<String, Logger>();
 	private List<Worker> workers = new CopyOnWriteArrayList();
 	private Map<String,String> appIdToTraceId = new HashMap();
 	private String ellaOutDir;
@@ -246,7 +246,7 @@ public class Server
 					out.write(dataJson);
 				}
 
-				if (freq.containsKey(appId)){
+				/*if (freq.containsKey(appId)){
 					int num = freq.get(appId);
 					num++;
 					if (num >= MAX){
@@ -273,13 +273,13 @@ public class Server
 					freq.put(appId, num);
 				}else{
 					freq.put(appId, 1);
-				}
+				}*/
 
 				
 				if(covUpdate.requestsStop()){
 					appIdToTraceId.remove(appId);
-					loggers.remove(appId);
-					freq.remove(appId);
+					//loggers.remove(appId);
+					//freq.remove(appId);
 					covers.remove(appId);
 				}
 				//logger.log(Level.INFO, "Upload succeeded");
