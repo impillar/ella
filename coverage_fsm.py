@@ -3,20 +3,9 @@ import re
 import sys
 import shutil
 
-def post_operation(folder, iteration_id):
-
-	new_folder = os.path.join(folder + "/instrumented-output/stoat_mcmc_sampling_output/", iteration_id)
-	if not os.path.isdir(new_folder):
-		os.makedirs(new_folder)
-	
-	for f in os.listdir(folder):
-		if f.startswith('coverage.dat.'):
-			shutil.move(os.path.join(folder, f), new_folder)
-			
-	
-
-def main(folder, iteration_id):
+def main(folder):
 	coverage = []
+	size = 0
 	for f in os.listdir(folder):
  		# in the current implementation, there should only one "coverage.data" file
 		if f.startswith('coverage.dat.'): 
@@ -34,7 +23,7 @@ def main(folder, iteration_id):
 
 	if len(coverage) < 1:
 		print '0'
-		exit('0')
+		exit(0)
 
 	for cov_file in coverage:
 		#print cov_file
@@ -51,11 +40,9 @@ def main(folder, iteration_id):
 	else:
 		print '0'
 
-	post_operation(folder, iteration_id)
-
 
 if __name__ == '__main__':
-	if len(sys.argv) < 3:
-		print 'Usage: python %s [FOLDER] [ITERATION ID]' % __file__
+	if len(sys.argv) < 2:
+		print 'Usage: python %s [FOLDER]' % __file__
 		exit(0)
-	main(sys.argv[1], sys.argv[2])
+	main(sys.argv[1])

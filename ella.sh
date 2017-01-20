@@ -9,7 +9,7 @@ exit
 fi
 
 if [ "$1" == 'e' ]; then
-adb shell am broadcast -a com.apposcopy.ella.COVERAGE --es action \"e\"
+adb -s $2 shell am broadcast -a com.apposcopy.ella.COVERAGE --es action \"e\"
 exit
 fi
 

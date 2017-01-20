@@ -23,6 +23,8 @@ public class Server
 	private Map<String, Integer> freq = new HashMap<String, Integer>();
 	public static int MAX = 120;
 
+	private Map<String, Set<Integer>> covers = new HashMap<String, Set<Integer>>();
+
 	private Map<String, Logger> loggers = new HashMap<String, Logger>();
 	private List<Worker> workers = new CopyOnWriteArrayList();
 	private Map<String,String> appIdToTraceId = new HashMap();
@@ -212,19 +214,38 @@ public class Server
 					appIdToTraceId.put(appId, traceId);
 				}
 				
-				File datFile = new File(dir, "coverage.dat."+traceId);
-				boolean append = datFile.exists();
-				out = new BufferedWriter(new FileWriter(datFile, append));
-				if(!append){
+				if (!covers.containsKey(appId)){
+					covers.put(appId, new HashSet<Integer>());
+				}
+			
+				String dataJson = covUpdate.getData();
+				Set<Integer> currentApp = covers.get(appId);
+				boolean update = false;
+				for (String numStr : dataJson.split("\\n")){
+					if (numStr.trim().length() == 0)	continue;
+					int numInt = Integer.parseInt(numStr);
+					if (!currentApp.contains(numInt)){
+						currentApp.add(numInt);
+						update = true;
+					}
+				}
+
+				if (update){
+
+					File datFile = new File(dir, "coverage.dat."+traceId);
+					boolean append = datFile.exists();
+					out = new BufferedWriter(new FileWriter(datFile/*, append*/));
+				//if(!append){
 					StringBuilder builder = new StringBuilder();
 					builder.append("recorder:").append(covUpdate.getRecorderName()).append("\n");
 					builder.append("version:").append("1").append("\n");
 					builder.append("###").append("\n");
 					String metaData = builder.toString();
 					out.write(metaData, 0, metaData.length());
+				//}
+					out.write(dataJson);
 				}
 
-				String dataJson = covUpdate.getData();
 				if (freq.containsKey(appId)){
 					int num = freq.get(appId);
 					num++;
@@ -253,12 +274,13 @@ public class Server
 				}else{
 					freq.put(appId, 1);
 				}
-				out.write(dataJson);
+
 				
 				if(covUpdate.requestsStop()){
 					appIdToTraceId.remove(appId);
 					loggers.remove(appId);
 					freq.remove(appId);
+					covers.remove(appId);
 				}
 				//logger.log(Level.INFO, "Upload succeeded");
 			} catch (FileNotFoundException fne) {
