@@ -67,6 +67,7 @@ public class Server
 
 		while(true){
 			try{
+synchronized(this){
 				Socket socket = serverSocket.accept();
 				PushbackInputStream inputStream = new PushbackInputStream(new BufferedInputStream(socket.getInputStream()), BUFSIZE);
 				byte[] buf = new byte[4];
@@ -81,13 +82,16 @@ public class Server
 					} else {
 						inputStream.unread(buf, 0, 4);
 					}
-				} else
-					assert false;
+				//} else
+				//	assert false;
 				Worker worker = new Worker(socket, inputStream);
 				workers.add(worker);
 				worker.start();
+				}
+}
 			} catch(IOException e){
-				throw new Error(e);
+				System.out.println("Exception: "+ e.toString() +new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()));
+				//throw new Error(e);
 			}
 		}
 		
@@ -154,7 +158,7 @@ public class Server
 					}
 				}while(read >= 0 && !stop);
 			} catch(IOException e){
-				System.out.println(e.getMessage());
+				System.out.println("method(run)" + e.getMessage());
 				e.printStackTrace();
 			} finally {
 				try{
@@ -230,7 +234,7 @@ public class Server
 					}
 				}
 
-				if (update){
+				if (update || true){
 
 					File datFile = new File(dir, "coverage.dat."+traceId);
 					boolean append = datFile.exists();
