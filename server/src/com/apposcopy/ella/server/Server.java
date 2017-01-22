@@ -89,7 +89,7 @@ synchronized(this){
 				worker.start();
 				}
 }
-			} catch(IOException e){
+			} catch(Exception e){
 				System.out.println("Exception: "+ e.toString() +new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()));
 				//throw new Error(e);
 			}
